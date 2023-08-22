@@ -5,6 +5,10 @@
 #include <string>
 #include <sstream>
 
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+
 //用于多返回值，ParseShader()函数
 struct ShaderProgramSource
 {
@@ -66,12 +70,13 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
 	{
 		int length;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-		char* message = (char*)alloca(length * sizeof(char));
+		char* message = (char*)_malloca(length * sizeof(char));
 		glGetShaderInfoLog(id, length, &length, message);
 
 		std::cout << "Failed to compile" << 
 			(type == GL_VERTEX_SHADER ? "vertex" : "fragment") << "shader" << std::endl;
-		std::cout << message << std::endl;
+
+		std::cout << (const int*)message << std::endl;
 
 		glDeleteShader(id);
 		
@@ -124,32 +129,38 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
+	//设置缓存刷新时间
+	glfwSwapInterval(1);
+
 	if (glewInit() != GLEW_OK)
 		std::cout << "Error!" << std::endl;
 
+	//输出版本号
 	std::cout << glGetString(GL_VERSION) << std::endl;
-
-	//创建了一个数组来储存数据
-	float positons[6] = {
+	{
+	//顶点缓冲区数据
+	float positons[] = {
 		-0.5f, -0.5f,
+		-0.5f,  0.5f,
+		 0.5f,  0.5f,
 		 0.5f, -0.5f,
-		 0.0f,  0.5f,
 	};
 
-	// 第一个参数是指定想要多少个缓冲区，OpenGL可以一次生成一堆缓冲区，
-	// 第二个参数需要一个无符号整型指针，因为这个函数返回void，不会返回生成的缓冲区id，所以我们给它提供一个整型指针，函数就会把id写入这个指针指向的内存
-	unsigned buffer;
-	glGenBuffers(1, &buffer);
-	// 第一个参数是目标，对我们来说这只是一个内存缓冲区，这里是一个数组，
-	// 第二个参数是创建好的buffer
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	// 第一个参数同上
-	// 第二个参数需要指定大小，可以直接写成sizeof(positions)，但这里的写法更清晰
-	// 第三个参数指定缓冲区
-	// 第四个参数根据文档，STATIC表示创建一次，多次使用（每一帧都要画），DYNAMIC表示数据储存的内容会被反复修改和多次使用
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positons, GL_STATIC_DRAW);
+	//索引缓冲区数据
+	unsigned int indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
 
-	//相当于激活顶点属性的使用
+	//绑定顶点数组
+	unsigned int vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	//绑定顶点缓冲区
+	VertexBuffer vb(positons, 4 * 2 * sizeof(float));
+
+	//激活顶点属性
 	glEnableVertexAttribArray(0);
 	//index 我们只有位置这一个属性，所以只要调用这个函数一次，指定一个属性索引，0，
 	//size 指的是组件数目，比如这里2个浮点数表示一个顶点，就填2
@@ -160,16 +171,31 @@ int main(void)
 	//			当用结构体去定义顶点的时候，我们可以用宏的偏移量来计算这是什么，而不是写个8
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
+	//绑定索引缓冲区
+	IndexBuffer ib(indices, 6);
 
 	//指定一个相对路径，这样的话在运行可执行文件时，默认的工作目录是包含可执行文件的目录
 	//但我们通过VisualStudio调试器运行，工作目录是可以由VisualStudio设置的，项目属性->调试->工作目录
 	ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
 
-	std::cout << source.VertexSource << std::endl;
-	std::cout << source.FragmentSource << std::endl;
+	//这两行为调试代码，输出着色器字符串源码
+	//std::cout << source.VertexSource << std::endl;
+	//std::cout << source.FragmentSource << std::endl;
 
+	//创建着色器并使用
 	unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
 	glUseProgram(shader);
+
+	//找到统一变量u_Color的索引
+	int location = glGetUniformLocation(shader, "u_Color");
+	//如果location为-1，意味着没找到uniform变量
+	ASSERT(location != -1);
+	
+	//取消绑定
+	GLCall(glBindVertexArray(0));
+	GLCall(glUseProgram(0));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -180,11 +206,23 @@ int main(void)
 		//1. mode 指定模式，就是要画个什么东西，这里指定一个三角形
 		//2. first 想要开始的下标
 		//3. count 要渲染的索引的数量
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
 
-		// 另外一种DrawCall指令，这里的第三个参数type指的是索引数据的类型，
-		// 最后一个参数通常不用，写成NULL就行
-		//glDrawElements(GL_TRIANGLES, 3, ，);
+		float rr = glfwGetTime();
+
+		GLCall(glUseProgram(shader));
+		GLCall(glUniform4f(location, sin(rr), 0.5, 0.4, 10.0));
+
+		/*glBindBuffer(GL_ARRAY_BUFFER, buffer);*/
+		GLCall(glBindVertexArray(vao));
+		ib.Bind();
+
+
+		// DrawCall指令
+		// 这里的第三个参数type指的是索引数据的类型,必须是GL_UNSIGNED_BYTE、GL_UNSIGNED_SHORT或GL_UNSIGNED_INT之一。
+		// 最后一个参数指定当前绑定到GL_ELEMENT_ARRAY_BUFFER目标的数据缓冲区数组的第一个索引的偏移量。
+		// 通常我们绑定了buffer后，这里写成NULL就行,
+		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -194,7 +232,7 @@ int main(void)
 	}
 
 	glDeleteProgram(shader);
-
+	}
 	glfwTerminate();
 	return 0;
 }
