@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{2fefbf19-4250-44bb-918f-a422fc029951}</ProjectGuid>
+    <RootNamespace>OpenGLLearning</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)\vendor\GLFW\include;$(ProjectDir)\vendor\GLAD\include;$(ProjectDir)\vendor\FREETYPE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)vendor\GLFW;$(ProjectDir)vendor\FREETYPE;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)\vendor\GLFW\include;$(ProjectDir)\vendor\GLAD\include;$(ProjectDir)\vendor\FREETYPE\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)vendor\GLFW;$(ProjectDir)vendor\FREETYPE;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Lessons.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="vendor\GLAD\glad.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Lessons.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\config\ftconfig.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\config\ftheader.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\config\ftmodule.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\config\ftoption.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\config\ftstdlib.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\config\integer-types.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\config\mac-support.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\config\public-macros.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\freetype.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftadvanc.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftbbox.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftbdf.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftbitmap.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftbzip2.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftcache.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftchapters.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftcid.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftcolor.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftdriver.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\fterrdef.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\fterrors.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftfntfmt.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftgasp.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftglyph.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftgxval.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftgzip.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftimage.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftincrem.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftlcdfil.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftlist.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftlogging.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftlzw.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftmac.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftmm.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftmodapi.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftmoderr.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftotval.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftoutln.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftparams.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftpfr.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftrender.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftsizes.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftsnames.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftstroke.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftsynth.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftsystem.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\fttrigon.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\fttypes.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ftwinfnt.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\otsvg.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\t1tables.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\ttnameid.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\tttables.h" />
+    <ClInclude Include="vendor\FREETYPE\include\freetype\tttags.h" />
+    <ClInclude Include="vendor\FREETYPE\include\ft2build.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
